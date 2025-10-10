@@ -85,8 +85,13 @@
                 setTempScriptUrl(savedUrl);
 
                 if (savedUrl) {
-                    loadItems();
-                    const interval = setInterval(loadItems, 5000);
+                    loadItems(true);
+                    const interval = setInterval(() => {
+                        // Nur automatisch aktualisieren wenn nicht gerade gespeichert wird
+                        if (!isSaving) {
+                            loadItems(false);
+                        }
+                    }, 5000);
                     return () => clearInterval(interval);
                 }
             }, [scriptUrl]);
@@ -106,8 +111,8 @@
                 loadItems();
             };
 
-            const loadItems = async () => {
-                if (!scriptUrl || isSaving) return;
+            const loadItems = async (force = false) => {
+                if (!scriptUrl || (isSaving && !force)) return;
 
                 try {
                     const response = await fetch(scriptUrl + '?action=get&t=' + Date.now());
@@ -123,8 +128,11 @@
                         return;
                     }
 
-                    setItems(data.items || []);
-                    setLastSync(new Date());
+                    // Nur aktualisieren wenn wir nicht gerade speichern oder force=true
+                    if (!isSaving || force) {
+                        setItems(data.items || []);
+                        setLastSync(new Date());
+                    }
                     setError('');
                 } catch (error) {
                     console.error('Fehler beim Laden:', error);
@@ -155,12 +163,12 @@
                         })
                     });
 
-                    // Warte kurz und lade dann die aktuellen Daten
+                    // Warte länger bevor wir neu laden, damit Google Script Zeit hat zu speichern
                     setTimeout(async () => {
-                        await loadItems();
+                        await loadItems(true);
                         setIsSaving(false);
                         setLoading(false);
-                    }, 800);
+                    }, 1200);
                 } catch (error) {
                     console.error('Fehler beim Speichern:', error);
                     setError('Fehler beim Speichern.');
