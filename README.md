@@ -19,7 +19,7 @@ Eine moderne, echtzeitfähige Einkaufslisten-WebApp zum Teilen mit Familie oder 
 
 ## 🚀 Demo
 
-**Live-Demo:** [Hier deine GitHub Pages URL einfügen]
+**Live-Demo:** https://felixthe.github.io/Einkaufsliste/
 
 ## 📋 Voraussetzungen
 
