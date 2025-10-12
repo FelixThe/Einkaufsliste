@@ -222,7 +222,6 @@ Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) f�
 
 Bei Fragen oder Problemen:
 - Öffne ein [Issue](https://github.com/username/repository/issues)
-- Kontaktiere mich über [deine E-Mail]
 
 ---
 
