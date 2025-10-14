@@ -160,11 +160,30 @@
                     const itemRef = database.ref(`items/${id}`);
                     const snapshot = await itemRef.once('value');
                     const item = snapshot.val();
+                    const newCheckedState = !item.checked;
                     
-                    await itemRef.update({
-                        checked: !item.checked,
-                        timestamp: Date.now()
-                    });
+                    // Wenn das Produkt abgehakt wird, setze order auf 0 und erhöhe alle anderen abgehakten um 1
+                    // Wenn es wieder enthakt wird, setze order auf 0 und erhöhe alle anderen unabgehakten um 1
+                    const updates = {};
+                    
+                    if (newCheckedState) {
+                        // Wird abgehakt: Erhöhe alle abgehakten Produkte um 1
+                        items.filter(i => i.checked).forEach(i => {
+                            updates[`items/${i.id}/order`] = (i.order || 0) + 1;
+                        });
+                        updates[`items/${id}/order`] = 0;
+                    } else {
+                        // Wird enthakt: Erhöhe alle unabgehakten Produkte um 1
+                        items.filter(i => !i.checked).forEach(i => {
+                            updates[`items/${i.id}/order`] = (i.order || 0) + 1;
+                        });
+                        updates[`items/${id}/order`] = 0;
+                    }
+                    
+                    updates[`items/${id}/checked`] = newCheckedState;
+                    updates[`items/${id}/timestamp`] = Date.now();
+                    
+                    await database.ref().update(updates);
                 } catch (e) {
                     console.error('Fehler beim Aktualisieren:', e);
                 }
