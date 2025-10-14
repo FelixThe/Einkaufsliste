@@ -129,17 +129,23 @@
 
                 try {
                     const itemsRef = database.ref('items');
+                    
+                    // Erhöhe die order aller existierenden Produkte um 1
+                    const updates = {};
+                    items.forEach(item => {
+                        updates[`items/${item.id}/order`] = (item.order || 0) + 1;
+                    });
+                    
+                    // Füge das neue Produkt mit order: 0 hinzu (erscheint oben)
                     const newItemRef = itemsRef.push();
-                    
-                    const maxOrder = items.length > 0 ? Math.max(...items.map(i => i.order || 0)) : 0;
-                    
-                    await newItemRef.set({
+                    updates[`items/${newItemRef.key}`] = {
                         name: newItem.trim(),
                         checked: false,
                         timestamp: Date.now(),
-                        order: maxOrder + 1
-                    });
-
+                        order: 0
+                    };
+                    
+                    await database.ref().update(updates);
                     setNewItem('');
                 } catch (e) {
                     console.error('Fehler beim Hinzufügen:', e);
