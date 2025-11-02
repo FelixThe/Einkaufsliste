@@ -24,7 +24,7 @@ Eine moderne, echtzeitfähige Einkaufslisten-WebApp zum Teilen mit Familie oder 
 ## 📋 Voraussetzungen
 
 - Ein Google-Konto für Firebase
-- Ein moderner Webbrowser (Chrome, Firefox, Safari, Edge)
+- Ein moderner Webbrowser (Chrome, Firefox, Edge)
 - Optional: GitHub Account für Hosting
 
 ## 🔧 Installation & Setup
